@@ -1,0 +1,28 @@
+install.packages("quantmod")
+install.packages("DMwR")
+library(quantmod)
+library(DMwR)
+
+#choose first ten stocks, however APPL(apple) is unable to be imported
+getSymbols("MSFT",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("AMZN",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("FB",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("GOOGL",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("NVDA",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("TSLA",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("PYPL",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("NFLX",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("ADBE",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+getSymbols("INTC",src = "yahoo", from = as.Date("2020-03-01"), to = as.Date("2020-06-01"))
+
+stock_close <- cbind.data.frame(MSFT$MSFT.Close,AMZN$AMZN.Close,FB$FB.Close,GOOGL$GOOGL.Close,NVDA$NVDA.Close,TSLA$TSLA.Close,PYPL$PYPL.Close,NFLX$NFLX.Close,ADBE$ADBE.Close,INTC$INTC.Close)
+
+stockclose_NA <- stock_close
+
+#delete random 10 datas
+for (i in 1:10){
+  stockclose_NA[sample(1:nrow(stock_close),1),sample(1:ncol(stock_close),1)] <- NA
+} 
+
+#conduct k nearest neighbor imputation of the missing data
+stock_k <- knnImputation(stockclose_NA, scale = T)
